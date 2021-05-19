@@ -12,12 +12,14 @@ namespace Elysium.Combat
 
         public DamageTeam Team => DamageTeam;
         public bool IsDead => isDead;
+
+        private GameObject damageableObject;
         public GameObject DamageableObject
         {
             get
             {
-                if (!gameObject) { return null; }
-                return transform.parent.gameObject;
+                if (damageableObject == null) { return null; }
+                return damageableObject;
             }
         }
 
@@ -28,6 +30,8 @@ namespace Elysium.Combat
         public event Action OnDeathStatusChange;
         public event Action OnDeath;
         public event Action OnRespawn;
+
+        private void Awake() => damageableObject = transform.parent.gameObject;
 
         public bool TakeDamage(IDamageDealer damageDealer, int amount)
         {
