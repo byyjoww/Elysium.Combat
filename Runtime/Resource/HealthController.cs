@@ -7,7 +7,7 @@ namespace Elysium.Combat
     [Serializable]
     public class HealthController : ResourceController, IDamageable
     {
-        [ReadOnly] public DamageTeam DamageTeam;
+        public DamageTeam DamageTeam;
         [SerializeField, ReadOnly] private bool isDead;
 
         public DamageTeam Team => DamageTeam;
