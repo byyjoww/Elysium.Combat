@@ -118,7 +118,7 @@ namespace Elysium.Combat
             return true;
         }
 
-        protected virtual void TriggerOnFillValueChanged()
+        public virtual void TriggerOnFillValueChanged()
         {
             // FORCE RECALCULATE THE MAX VALUE
             MaxResource.Recalculate();
