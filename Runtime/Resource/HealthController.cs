@@ -25,32 +25,32 @@ namespace Elysium.Combat
 
         // EVENTS
         public event Action OnHealthEmpty;
-        public event Action<IDamageDealer, int> OnTakeDamage;
-        public event Action<IDamageDealer, int> OnHeal;
+        public event Action<IDamageDealer, int, string> OnTakeDamage;
+        public event Action<IDamageDealer, int, string> OnHeal;
         public event Action OnDeathStatusChange;
         public event Action OnDeath;
         public event Action OnRespawn;
 
         private void Awake() => damageableObject = transform.parent.gameObject;
 
-        public bool TakeDamage(IDamageDealer damageDealer, int amount)
+        public bool TakeDamage(IDamageDealer damageDealer, int amount, string source = "")
         {
             if (IsDead) { Debug.Log($"{gameObject.name} is dead"); return false; }
 
             ForceLose(amount);
 
-            OnTakeDamage?.Invoke(damageDealer, amount);
+            OnTakeDamage?.Invoke(damageDealer, amount, source);
             CheckDeathStatus();
             return true;
         }
 
-        public bool Heal(IDamageDealer damageDealer, int amount)
+        public bool Heal(IDamageDealer damageDealer, int amount, string source = "")
         {
             if (IsDead) { Debug.Log($"{gameObject.name} is dead"); return false; }
 
             Gain(amount);
 
-            OnHeal?.Invoke(damageDealer, amount);
+            OnHeal?.Invoke(damageDealer, amount, source);
             CheckDeathStatus();
             return true;
         }
