@@ -50,7 +50,7 @@ namespace Elysium.Combat
             Vector3 line = targetPos - origin;
             Vector3 worldRelativePosition = targetPos + offset - transform.position;
 
-            if (Vector3.Dot(line, worldRelativePosition) < 0f * line.sqrMagnitude)
+            if (Vector3.Dot(line, worldRelativePosition) < 0f * line.sqrMagnitude || Vector3.Distance(transform.position, targetPos) < 0.1f)
             {
                 OnHitTarget(target);
             }
