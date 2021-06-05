@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Elysium.Combat
 {
-    [Serializable]
     public class HealthController : ResourceController, IDamageable
     {
         public DamageTeam DamageTeam;
@@ -13,7 +12,7 @@ namespace Elysium.Combat
         public DamageTeam Team => DamageTeam;
         public bool IsDead => isDead;
 
-        private GameObject damageableObject;
+        [SerializeField] private GameObject damageableObject;
         public GameObject DamageableObject
         {
             get
@@ -31,7 +30,10 @@ namespace Elysium.Combat
         public event Action OnDeath;
         public event Action OnRespawn;
 
-        private void Awake() => damageableObject = transform.parent.gameObject;
+        private void Awake()
+        {
+            if (damageableObject == null) { damageableObject = transform.parent.gameObject; }
+        }
 
         public bool TakeDamage(IDamageDealer damageDealer, int amount, string source = "")
         {

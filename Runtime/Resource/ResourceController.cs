@@ -9,7 +9,7 @@ namespace Elysium.Combat
 {
     public class ResourceController : MonoBehaviour, IResource
     {
-        public RefValue<int> MaxResource { get; set; } = new RefValue<int>(() => 1);
+        public RefValue<int> MaxResource { get; set; } = new RefValue<int>(() => 100);
         public RefValue<int> PassiveRecoveryAmount { get; set; } = new RefValue<int>(() => 0);
         public RefValue<float> PassiveRecoveryInterval { get; set; } = new RefValue<float>(() => 0);
 

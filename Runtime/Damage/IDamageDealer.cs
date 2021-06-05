@@ -1,16 +1,22 @@
 using Elysium.Utils;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Elysium.Combat
 {
-    public enum DamageTeam { PLAYER = 0, ENEMY = 1, }
+    public enum DamageTeam 
+    { 
+        PLAYER = 0, 
+        ENEMY = 1, 
+    }
 
     public interface IDamageDealer
     {
         RefValue<int> Damage { get; set; }
-        List<DamageTeam> DealsDamageToTeams { get; }
+        DamageTeam[] DealsDamageToTeams { get; }
         GameObject DamageDealerObject { get; }
-        // event Action<IDamageable> OnAttack;
+
+        void CriticalHit();
     }
 }

@@ -22,7 +22,7 @@ namespace Elysium.Combat
                         return lastKnownPosition;
                     }
 
-                    lastKnownPosition = target.DamageableObject.transform.position + target.DamageableObject.transform.up;
+                    lastKnownPosition = target.DamageableObject.transform.position;
                     return lastKnownPosition;
                 }
                 else

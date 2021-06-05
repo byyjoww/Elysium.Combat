@@ -17,26 +17,27 @@ namespace Elysium.Combat
         protected Vector3 lastKnownPosition = default;
         protected Vector3 origin = default;
 
-        protected List<DamageTeam> dealsDamageTo = default;
+        protected DamageTeam[] dealsDamageTo = default;
 
         protected Action<IDamageable> onHit = default;
 
         protected virtual Vector3 targetPos => Vector3.forward;
 
-        public virtual void Setup(IDamageable _target, Vector3 _fallbackLocation, List<DamageTeam> _dealsDamageTo, Action<IDamageable> _onHit)
+        public virtual void Setup(IDamageable _target, DamageTeam[] _dealsDamageTo, Action<IDamageable> _onHit)
         {
-            lastKnownPosition = _fallbackLocation;
+            if (_target == null) { Debug.LogError("passed in null target to projectile"); }
+            lastKnownPosition = _target.DamageableObject.transform.position;
             target = _target;
             Setup(_dealsDamageTo, _onHit);
         }
 
-        public virtual void Setup(Vector3 _direction, List<DamageTeam> _dealsDamageTo, Action<IDamageable> _onHit)
+        public virtual void Setup(Vector3 _direction, DamageTeam[] _dealsDamageTo, Action<IDamageable> _onHit)
         {
             direction = _direction;
             Setup(_dealsDamageTo, _onHit);
         }
 
-        protected virtual void Setup(List<DamageTeam> _dealsDamageTo, Action<IDamageable> _onHit)
+        protected virtual void Setup(DamageTeam[] _dealsDamageTo, Action<IDamageable> _onHit)
         {
             onHit = _onHit;
             dealsDamageTo = _dealsDamageTo;

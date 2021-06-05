@@ -4,6 +4,7 @@ using Elysium.Utils.Timers;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Elysium.Combat
 {
@@ -15,7 +16,8 @@ namespace Elysium.Combat
 
         [Header("Parameters")]
         [HideInInspector] public float AttackRange = 1f;
-        [HideInInspector] public List<DamageTeam> OpposingTeams;
+        [HideInInspector] public string attackTrigger = "attack";
+        [HideInInspector] public DamageTeam[] OpposingTeams;
 
         [ReadOnly] public bool CanAttack = false;
         [ReadOnly] public bool IsAttacking = false;
@@ -23,7 +25,7 @@ namespace Elysium.Combat
         public IDamageable CombatTarget { get; set; }
         private IDamageable cachedTarget;
 
-        public List<DamageTeam> DealsDamageToTeams => OpposingTeams;
+        public DamageTeam[] DealsDamageToTeams => OpposingTeams;
         public GameObject DamageDealerObject
         {
             get
@@ -34,19 +36,19 @@ namespace Elysium.Combat
         }
 
         private TimerInstance attackTimer;
-        private IAnimationEvents AnimationController;
+        private IModelController modelController;
 
         // ASPD Calculation
         public float AttackSpeed => BaseAttackSpeed.Value * BonusAttackSpeed.Value;
         private float attackInterval => 1 / AttackSpeed;
 
         // EVENTS
-        public event Action<IDamageable> OnAttack;
-        public event Action<IDamageable> OnTargetDied;
-
-        public event Action OnAttackStart;
-        public event Action OnAttackHit;
-        public event Action OnAttackEnd;
+        public event UnityAction<IDamageable> OnAttack;
+        public event UnityAction<IDamageable> OnTargetDied;
+        public event UnityAction OnAttackStart;
+        public event UnityAction OnAttackHit;
+        public event UnityAction OnAttackEnd;
+        public event UnityAction OnCriticalHit;
 
         private void Start() => CheckForExistingTimer();
 
@@ -60,11 +62,11 @@ namespace Elysium.Combat
 
             cachedTarget = CombatTarget;
             OnAttackStart?.Invoke();
-            AnimationController.SetAttackSpeed(AttackSpeed);
-            AnimationController.StartAnimation(Animation.Attack);
+            modelController.SetAttackSpeed(AttackSpeed);
+            modelController.PlayAnimation(attackTrigger);
             IsAttacking = true;
-            AnimationController.OnAttackHit += ExecuteAttack;
-            AnimationController.OnAttackEnd += EndAttack;
+            modelController.OnAnimationHit += CheckForHit;
+            modelController.OnAnimationEnd += CheckForEnd;
             transform.LookAt(cachedTarget.DamageableObject.transform);
             return true;
         }
@@ -78,14 +80,31 @@ namespace Elysium.Combat
             if (cachedTarget != null) { cachedTarget.TakeDamage(this, Damage.Value); }
             OnAttack?.Invoke(cachedTarget);
             cachedTarget = null;
-            AnimationController.OnAttackHit -= ExecuteAttack;
+            modelController.OnAnimationHit -= CheckForHit;
         }
 
         public void EndAttack()
         {
             OnAttackEnd?.Invoke();
             IsAttacking = false;
-            AnimationController.OnAttackEnd -= EndAttack;
+            modelController.OnAnimationEnd -= CheckForEnd;
+        }
+
+        public void CriticalHit()
+        {
+            OnCriticalHit?.Invoke();
+        }
+
+        private void CheckForHit(string _animation) 
+        {
+            if (_animation != attackTrigger) { return; }
+            ExecuteAttack(); 
+        }
+
+        private void CheckForEnd(string _animation) 
+        {
+            if (_animation != attackTrigger) { return; }
+            EndAttack(); 
         }
 
         private void CheckForExistingTimer()
@@ -134,7 +153,7 @@ namespace Elysium.Combat
             Gizmos.color = Color.red;
             if (!transform.parent) { return; }
             Gizmos.DrawWireSphere(transform.parent.position, AttackRange);
-        }
+        }        
         #endregion
     }
 }
