@@ -88,7 +88,17 @@ namespace Elysium.Combat
 
         public void SetAttackSpeed(float _aspd)
         {
-            anim.SetFloat("aspd", _aspd);
+            SetAnimatorFloat("aspd", _aspd);
+        }
+
+        public void SetMoveSpeed(float _mspd)
+        {
+            SetAnimatorFloat("mspd", _mspd);
+        }
+
+        public void SetAnimatorFloat(string _name, float _value)
+        {
+            anim.SetFloat(_name, _aspd);
         }
     }
 }
