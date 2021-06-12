@@ -8,12 +8,12 @@ namespace Elysium.Combat
 {
     public interface IModelController
     {
+        Transform Firepoint { get; }
+
         event UnityAction<string> OnAnimationHit;
         event UnityAction<string> OnAnimationEnd;
 
         void PlayAnimation(string _trigger);
-        void EndAnimation();
-
         void SetAttackSpeed(float _aspd);
 
         Material SetMaterial(Material material);

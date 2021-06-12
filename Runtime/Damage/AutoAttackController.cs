@@ -16,7 +16,7 @@ namespace Elysium.Combat
 
         [Header("Parameters")]
         [HideInInspector] public float AttackRange = 1f;
-        [HideInInspector] public string attackTrigger = "attack";
+        [HideInInspector] public string attackStateName = "Attack";
         [HideInInspector] public DamageTeam[] OpposingTeams;
 
         [ReadOnly] public bool CanAttack = false;
@@ -63,7 +63,7 @@ namespace Elysium.Combat
             cachedTarget = CombatTarget;
             OnAttackStart?.Invoke();
             modelController.SetAttackSpeed(AttackSpeed);
-            modelController.PlayAnimation(attackTrigger);
+            modelController.PlayAnimation(attackStateName);
             IsAttacking = true;
             modelController.OnAnimationHit += CheckForHit;
             modelController.OnAnimationEnd += CheckForEnd;
@@ -97,13 +97,13 @@ namespace Elysium.Combat
 
         private void CheckForHit(string _animation) 
         {
-            if (_animation != attackTrigger) { return; }
+            if (_animation != attackStateName) { return; }
             ExecuteAttack(); 
         }
 
         private void CheckForEnd(string _animation) 
         {
-            if (_animation != attackTrigger) { return; }
+            if (_animation != attackStateName) { return; }
             EndAttack(); 
         }
 
@@ -112,7 +112,7 @@ namespace Elysium.Combat
             if (attackTimer != null) { return; }
 
             attackTimer = Timer.CreateTimer(0.1f, () => !this, false);
-            attackTimer.OnTimerEnd += ResetAttackDelay;
+            attackTimer.OnEnd += ResetAttackDelay;
         }
 
         private void SetAttackDelay()

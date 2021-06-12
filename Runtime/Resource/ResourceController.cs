@@ -1,4 +1,5 @@
-﻿using Elysium.Utils;
+﻿using Elysium.UI.ProgressBar;
+using Elysium.Utils;
 using Elysium.Utils.Attributes;
 using Elysium.Utils.Timers;
 using System;
@@ -7,25 +8,33 @@ using UnityEngine.Events;
 
 namespace Elysium.Combat
 {
-    public class ResourceController : MonoBehaviour, IResource
+    public class ResourceController : MonoBehaviour, IResource, IFillable
     {
+        [SerializeField] protected bool fillOnStart = false;
+        [SerializeField, ReadOnly] protected int currentResource;
+
+        protected TimerInstance passiveRecoveryTimer;
+
         public RefValue<int> MaxResource { get; set; } = new RefValue<int>(() => 100);
         public RefValue<int> PassiveRecoveryAmount { get; set; } = new RefValue<int>(() => 0);
         public RefValue<float> PassiveRecoveryInterval { get; set; } = new RefValue<float>(() => 0);
 
-        [SerializeField, ReadOnly] protected int currentResource;
-
         public float Max => MaxResource.Value;
         public float Current => currentResource;
-
         public bool PassiveRecoveryEnabled { get; set; } = false;
-        protected TimerInstance passiveRecoveryTimer;
+        
 
         // EVENTS
         public event UnityAction OnFillValueChanged;
         public event UnityAction<int> OnResourceLost;
         public event UnityAction<int> OnResourceGained;
         public event UnityAction<int, int> OnChanged;
+
+        protected virtual void Start()
+        {
+            SetupPassiveRecovery();
+            if (fillOnStart) { Fill(); }
+        }
 
         public virtual bool TryGain(int _amount)
         {
@@ -68,11 +77,6 @@ namespace Elysium.Combat
             return true;
         }
 
-        protected virtual void Start()
-        {
-            SetupPassiveRecovery();
-        }
-
         protected virtual void SetupPassiveRecovery()
         {
             passiveRecoveryTimer = Timer.CreateTimer(PassiveRecoveryInterval.Value, () => !this, false);
@@ -83,7 +87,7 @@ namespace Elysium.Combat
                 passiveRecoveryTimer.SetTime(PassiveRecoveryInterval.Value);
             }
 
-            passiveRecoveryTimer.OnTimerEnd += Tick;
+            passiveRecoveryTimer.OnEnd += Tick;
             PassiveRecoveryEnabled = true;
         }
 

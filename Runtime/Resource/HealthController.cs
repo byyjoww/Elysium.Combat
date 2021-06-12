@@ -6,13 +6,11 @@ namespace Elysium.Combat
 {
     public class HealthController : ResourceController, IDamageable
     {
-        public DamageTeam DamageTeam;
+        [SerializeField] private DamageTeam DamageTeam;
         [SerializeField, ReadOnly] private bool isDead;
-
+        [SerializeField] private GameObject damageableObject;
         public DamageTeam Team => DamageTeam;
         public bool IsDead => isDead;
-
-        [SerializeField] private GameObject damageableObject;
         public GameObject DamageableObject
         {
             get
@@ -32,7 +30,7 @@ namespace Elysium.Combat
 
         private void Awake()
         {
-            if (damageableObject == null) { damageableObject = transform.parent.gameObject; }
+            if (damageableObject == null) { damageableObject = transform.root.gameObject; }
         }
 
         public bool TakeDamage(IDamageDealer damageDealer, int amount, string source = "")
