@@ -27,14 +27,14 @@ namespace Elysium.Combat
         public void HitAnimation()
         {
             if (lastPlayedAnimation == "") { return; }
-            Debug.Log($"Animation {lastPlayedAnimation} has hit.");
+            // Debug.Log($"Animation {lastPlayedAnimation} has hit.");
             OnAnimationHit?.Invoke(lastPlayedAnimation);
         }
 
         private void EndAnimation()
         {
             if (lastPlayedAnimation == "") { return; }
-            Debug.Log($"Animation {lastPlayedAnimation} ended.");
+            // Debug.Log($"Animation {lastPlayedAnimation} ended.");
             OnAnimationEnd?.Invoke(lastPlayedAnimation);
 
             if (!mockAnimation) { anim.ResetTrigger(lastPlayedAnimation); }
@@ -43,7 +43,7 @@ namespace Elysium.Combat
 
         public void PlayAnimation(string _stateName)
         {
-            Debug.Log($"Playing animation {_stateName}...");
+            // Debug.Log($"Playing animation {_stateName}...");
             lastPlayedAnimation = _stateName;
 
             if (!mockAnimation)
@@ -60,11 +60,11 @@ namespace Elysium.Combat
             // if (anim.IsInTransition(0)) { yield return new WaitUntil(() => !anim.IsInTransition(0)); }
 
             yield return new WaitUntil(() => anim.IsInTransition(0));
-            Debug.Log($"Animation {lastPlayedAnimation} is transitioning in");
+            // Debug.Log($"Animation {lastPlayedAnimation} is transitioning in");
             float duration = anim.GetAnimatorTransitionInfo(0).duration;
             yield return new WaitForSeconds(duration);
             yield return new WaitUntil(() => anim.IsInTransition(0));
-            Debug.Log($"Animation {lastPlayedAnimation} is transitioning out");
+            // Debug.Log($"Animation {lastPlayedAnimation} is transitioning out");
             EndAnimation();
             yield return null;
         }
