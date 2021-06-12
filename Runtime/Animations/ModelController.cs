@@ -98,7 +98,7 @@ namespace Elysium.Combat
 
         public void SetAnimatorFloat(string _name, float _value)
         {
-            anim.SetFloat(_name, _aspd);
+            anim.SetFloat(_name, _value);
         }
     }
 }
