@@ -1,16 +1,14 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
 namespace Elysium.Combat
 {
     public interface IProjectile
     {
-        void Setup(IDamageable _target, DamageTeam[] _dealsDamageTo, Action<IDamageable> _onHit);
-        void Setup(Vector3 _target, DamageTeam[] _dealsDamageTo, Action<IDamageable> _onHit);
+        bool FriendlyFire { get; set; }
+        float Speed { get; set; }
 
-        void Move();
-        void OnHitTarget(IDamageable _target);
+        void Setup(Vector3 _direction, DamageTeam[] _dealsDamageTo, UnityAction<IDamageable> _OnHit);
+        void Setup(Transform _target, UnityAction<IDamageable> _OnHit);
     }
 }

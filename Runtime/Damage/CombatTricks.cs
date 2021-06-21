@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Elysium.Combat
 {
-    public static class CombatTricks
+    public static class Combat
     {
         public static bool Critical(IDamageDealer _damageDealer, int _before, out int _after)
         {

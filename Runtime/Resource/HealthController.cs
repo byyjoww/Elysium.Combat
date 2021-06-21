@@ -5,42 +5,28 @@ using UnityEngine;
 namespace Elysium.Combat
 {
     public class HealthController : ResourceController, IDamageable
-    {
-        [SerializeField] private DamageTeam DamageTeam;
-        [SerializeField, ReadOnly] private bool isDead;
-        [SerializeField] private GameObject damageableObject;
-        public DamageTeam Team => DamageTeam;
-        public bool IsDead => isDead;
-        public GameObject DamageableObject
-        {
-            get
-            {
-                if (damageableObject == null) { return null; }
-                return damageableObject;
-            }
-        }
+    {        
+        [SerializeField] private DamageTeam team;
+        public DamageTeam Team => team;
+        public MonoBehaviour Controller => this;
+        public bool IsDead { get; private set; }
 
-        // EVENTS
-        public event Action OnHealthEmpty;
         public event Action<IDamageDealer, int, string> OnTakeDamage;
         public event Action<IDamageDealer, int, string> OnHeal;
-        public event Action OnDeathStatusChange;
         public event Action OnDeath;
         public event Action OnRespawn;
 
-        private void Awake()
-        {
-            if (damageableObject == null) { damageableObject = transform.root.gameObject; }
-        }
-
         public bool TakeDamage(IDamageDealer damageDealer, int amount, string source = "")
         {
-            if (IsDead) { Debug.Log($"{gameObject.name} is dead"); return false; }
+            if (IsDead) 
+            { 
+                Debug.Log($"{gameObject.name} is dead"); 
+                return false; 
+            }
 
             ForceLose(amount);
-
             OnTakeDamage?.Invoke(damageDealer, amount, source);
-            CheckDeathStatus();
+            if (resource.Current <= 0) { Die(); }
             return true;
         }
 
@@ -51,42 +37,45 @@ namespace Elysium.Combat
             Gain(amount);
 
             OnHeal?.Invoke(damageDealer, amount, source);
-            CheckDeathStatus();
+            if (resource.Current <= 0) { Die(); }
             return true;
         }
 
-        public bool Ressurect()
+        public bool Ressurect(float _percentage)
         {
-            if (!IsDead) { Debug.Log($"{gameObject.name} is not dead"); return false; }
+            return Ressurect(resource.Max * _percentage);
+        }
 
-            isDead = false;
-            PassiveRecoveryEnabled = !isDead;
-            Fill();
+        public bool Ressurect(int _amount)
+        {
+            if (!IsDead)
+            { 
+                Debug.Log($"{gameObject.name} is not dead"); 
+                return false; 
+            }
 
-            OnDeathStatusChange?.Invoke();
+            IsDead = false;
             OnRespawn?.Invoke();
-            return true;
+            return Gain(_amount);
+        }
+
+        public bool Kill()
+        {
+            if (Empty()) { return Die(); }
+            return false;
         }
 
         private bool Die()
         {
-            if (IsDead) { Debug.Log($"{gameObject.name} is already dead"); return false; }
-
-            isDead = true;
-            PassiveRecoveryEnabled = !isDead;
-            OnDeath?.Invoke();
-            OnDeathStatusChange?.Invoke();
-            return true;
-        }
-
-        private void CheckDeathStatus()
-        {
-            if (currentResource <= 0)
-            {
-                currentResource = 0;
-                OnHealthEmpty?.Invoke();
-                Die();
+            if (IsDead) 
+            { 
+                Debug.Log($"{gameObject.name} is already dead");                 
+                return false; 
             }
+
+            IsDead = true;
+            OnDeath?.Invoke();
+            return true;
         }
     }
 }

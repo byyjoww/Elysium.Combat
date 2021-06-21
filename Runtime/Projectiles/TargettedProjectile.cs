@@ -1,59 +1,90 @@
 using Elysium.Utils;
+using Elysium.Utils.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Elysium.Combat
 {
-    public class TargettedProjectile : GenericProjectile
+    public class TargettedProjectile : MonoBehaviour, IProjectile
     {
-        [SerializeField] protected Vector3 offset = Vector3.zero;
+        [Separator("Settings", true)]
+        [SerializeField] private float speed = 10f;
+        [SerializeField] private float stoppingDistance = 0.1f;
+        [SerializeField] private float overshootThreshold = 0f;
+        [SerializeField] private float destroyTime = 0f;
 
-        protected override Vector3 targetPos
+        [Separator("Visual", true)]
+        [SerializeField] private bool createExplosion = false;
+        [SerializeField, ConditionalField("createExplosion")] private bool parentExplosionToTarget = false;
+        [SerializeField, ConditionalField("createExplosion")] private GameObject explosion = default;
+
+        public bool FriendlyFire { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public float Speed { get => speed; set => speed = value; }
+
+        private Transform Target { get; set; }
+        private Vector3 Origin { get; set; }
+        private Vector3 TargetLastKnownPosition { get; set; }
+        private UnityAction<IDamageable> OnHit { get; set; }
+        private bool TargetIsStillValid => Target != null && Target && Target.gameObject.activeSelf;
+        private Vector3 TargetPosition
         {
             get
             {
-                if (target != null && !target.DamageableObject.IsDestroyed())
-                {
-                    if (target.IsDead)
-                    {
-                        target = null;
-                        return lastKnownPosition;
-                    }
-
-                    lastKnownPosition = target.DamageableObject.transform.position;
-                    return lastKnownPosition;
-                }
-                else
-                {
-                    return lastKnownPosition;
-                }
+                if (TargetIsStillValid) { TargetLastKnownPosition = Target.position; }
+                return TargetLastKnownPosition;
             }
         }
 
-        protected override void Update()
+        public void Setup(Transform _target, UnityAction<IDamageable> _OnHit)
         {
-            base.Update();
+            this.Origin = transform.position;
+            this.OnHit = _OnHit;
+            this.Target = _target;
+        }
+
+        public void Setup(Vector3 _direction, DamageTeam[] _dealsDamageTo, UnityAction<IDamageable> _OnHit)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        private void Update()
+        {
+            Move();
             CheckDestination();
         }
 
-        public override void Move()
+        private void Move()
         {
-            transform.LookAt(targetPos);
+            transform.LookAt(TargetPosition);
             transform.Translate(transform.InverseTransformDirection(transform.forward) * Time.deltaTime * speed);
         }
 
-        protected virtual void CheckDestination()
+        private void CheckDestination()
         {
             // CHECK IF PROJECTILE OVERSHOT TARGET
-            Vector3 line = targetPos - origin;
-            Vector3 worldRelativePosition = targetPos + offset - transform.position;
-
-            if (Vector3.Dot(line, worldRelativePosition) < 0f * line.sqrMagnitude || Vector3.Distance(transform.position, targetPos) < 0.1f)
+            Vector3 line = TargetPosition - Origin;
+            Vector3 worldRelativePosition = TargetPosition - transform.position;
+            if (Vector3.Dot(line, worldRelativePosition) < overshootThreshold * line.sqrMagnitude || Vector3.Distance(transform.position, TargetPosition) < stoppingDistance)
             {
-                OnHitTarget(target);
+                Hit();
             }
+        }
+
+        private void Hit()
+        {
+            IDamageable damageable = Target.GetComponent<IDamageable>();
+            OnHit?.Invoke(damageable);
+
+            if (createExplosion) 
+            { 
+                if (parentExplosionToTarget) { Instantiate(explosion, Target); }
+                else { Instantiate(explosion, Target.position, explosion.transform.rotation); }
+            }
+
+            Destroy(gameObject, destroyTime);
         }
     }
 }

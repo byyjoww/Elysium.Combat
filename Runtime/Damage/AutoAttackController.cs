@@ -22,8 +22,8 @@ namespace Elysium.Combat
         [ReadOnly] public bool CanAttack = false;
         [ReadOnly] public bool IsAttacking = false;
 
-        public IDamageable CombatTarget { get; set; }
-        private IDamageable cachedTarget;
+        public Tuple<Transform, IDamageable> Target { get; set; }
+        private Tuple<Transform, IDamageable> CachedTarget { get; set; }
 
         public DamageTeam[] DealsDamageToTeams => OpposingTeams;
         public GameObject DamageDealerObject
@@ -54,20 +54,20 @@ namespace Elysium.Combat
 
         public bool TryAttack()
         {
-            if (CombatTarget == null) { /*Debug.Log("CAN'T AUTO ATTACK. TARGET IS NULL!");*/ return false; }
-            if (CombatTarget.IsDead) { /*Debug.Log("CAN'T AUTO ATTACK. TARGET IS DEAD!");*/ OnTargetDied?.Invoke(CombatTarget); return false; }
-            if (!InTargetAttackRange(CombatTarget.DamageableObject.transform)) { /*Debug.Log("CAN'T AUTO ATTACK. NOT WITHIN TARGET RANGE!");*/ return false; }
+            if (Target.Item1 == null) { /*Debug.Log("CAN'T AUTO ATTACK. TARGET IS NULL!");*/ return false; }
+            if (Target.Item2.IsDead) { /*Debug.Log("CAN'T AUTO ATTACK. TARGET IS DEAD!");*/ OnTargetDied?.Invoke(Target.Item2); return false; }
+            if (!InTargetAttackRange(Target.Item1)) { /*Debug.Log("CAN'T AUTO ATTACK. NOT WITHIN TARGET RANGE!");*/ return false; }
             if (!CanAttack) { /*Debug.Log("CAN'T AUTO ATTACK. ATTACK IS ON COOLDOWN!");*/ return false; }
             if (IsAttacking) { /*Debug.Log("CAN'T AUTO ATTACK. ALREADY ATTACKING!");*/ return false; }
 
-            cachedTarget = CombatTarget;
+            CachedTarget = Target;
             OnAttackStart?.Invoke();
             modelController.SetAttackSpeed(AttackSpeed);
             modelController.PlayAnimation(attackStateName);
             IsAttacking = true;
             modelController.OnAnimationHit += CheckForHit;
             modelController.OnAnimationEnd += CheckForEnd;
-            transform.LookAt(cachedTarget.DamageableObject.transform);
+            transform.LookAt(CachedTarget.Item1);
             return true;
         }
 
@@ -77,9 +77,9 @@ namespace Elysium.Combat
         {
             OnAttackHit?.Invoke();
             SetAttackDelay();
-            if (cachedTarget != null) { cachedTarget.TakeDamage(this, Damage.Value); }
-            OnAttack?.Invoke(cachedTarget);
-            cachedTarget = null;
+            if (CachedTarget != null) { CachedTarget.Item2.TakeDamage(this, Damage.Value); }
+            OnAttack?.Invoke(CachedTarget.Item2);
+            CachedTarget = null;
             modelController.OnAnimationHit -= CheckForHit;
         }
 
@@ -127,16 +127,16 @@ namespace Elysium.Combat
             // CombatTarget = null;
             IsAttacking = false;
             CanAttack = true;
-            cachedTarget = null;
+            CachedTarget = null;
         }
 
         private void FixedUpdate()
         {
             Vector3? _targetPos = null;
 
-            if (cachedTarget != null)
+            if (CachedTarget != null)
             {
-                _targetPos = cachedTarget.DamageableObject.transform.position;
+                _targetPos = CachedTarget.Item1.position;
             }
 
             if (!_targetPos.HasValue) { return; }
