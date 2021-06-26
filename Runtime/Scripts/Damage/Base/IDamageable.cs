@@ -10,6 +10,7 @@ namespace Elysium.Combat
     {
         bool IsDead { get; }
         DamageTeam Team { get; }
+        IElement Element { get; }
 
         event UnityAction<int, ISource> OnTakeDamage;
         event UnityAction<int, ISource> OnHeal;

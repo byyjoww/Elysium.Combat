@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Elysium.Combat
 {
-    public static partial class ResourceModifierSourceFactory
+    public static partial class SourceFactory
     {
         public static ISource System => new SystemSource();
         public static ISource Cost => new CostSource();

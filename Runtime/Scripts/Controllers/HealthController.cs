@@ -8,14 +8,25 @@ namespace Elysium.Combat
     public class HealthController : ResourceController, IDamageable
     {
         [SerializeField] private DamageTeam team;
+        [SerializeField] private Element element;
         public DamageTeam Team => team;
+        public IElement Element { get; private set; } = new NullElement();
         public MonoBehaviour Controller => this;
-        public bool IsDead { get; private set; }
+        public bool IsDead { get; private set; }        
 
         public event UnityAction<int, ISource> OnTakeDamage;
         public event UnityAction<int, ISource> OnHeal;
         public event UnityAction OnDeath;
         public event UnityAction OnRespawn;
+
+        protected override void Start()
+        {
+            base.Start();
+            if (ElementFactory.GetElementByKey(element, out IElement ielement))
+            {
+                Element = ielement;
+            }
+        }
 
         public bool TakeDamage(int amount, ISource _source)
         {

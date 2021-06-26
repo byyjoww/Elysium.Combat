@@ -1,6 +1,6 @@
 namespace Elysium.Combat
 {
-    public static partial class ResourceModifierSourceFactory
+    public static partial class SourceFactory
     {
         private class CostSource : ISource
         {

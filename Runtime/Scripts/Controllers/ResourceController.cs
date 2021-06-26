@@ -34,7 +34,7 @@ namespace Elysium.Combat
         public event UnityAction OnFillValueChanged;
         public event UnityAction OnEmpty;
 
-        private void Start()
+        protected virtual void Start()
         {
             if (manual && resource is NullResource)
             {
@@ -55,7 +55,7 @@ namespace Elysium.Combat
             this.resource.OnResourceGained += TriggerOnResourceGained;
             this.resource.OnResourceLost += TriggerOnResourceLost;
 
-            if (fillOnStart) { Fill(ResourceModifierSourceFactory.System); }
+            if (fillOnStart) { Fill(SourceFactory.System); }
         }
 
         public virtual void Gain(int _amount, ISource _source)

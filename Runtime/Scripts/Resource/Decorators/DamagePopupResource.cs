@@ -34,7 +34,7 @@ namespace Elysium.Combat
 
         private void GeneratePopup(int _delta, ISource _source)
         {
-            damagePopup.Create(transform.position, _delta);
+            damagePopup.Create(transform.position, _delta, _source.DamagePopupStyle);
         }
     }
 

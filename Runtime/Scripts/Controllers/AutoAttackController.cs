@@ -81,7 +81,7 @@ namespace Elysium.Combat
 
             if (CachedTarget != null)
             {
-                CombatCalculator.DealDamage(this, CachedTarget.Item2, new NullElement(), null, null);
+                CombatCalculator.DealDamage(this, new NullElement(), CachedTarget.Item2, null, null);
             }
 
             OnAttack?.Invoke(CachedTarget.Item2);

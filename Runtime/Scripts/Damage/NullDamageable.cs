@@ -10,6 +10,7 @@ namespace Elysium.Combat
         public bool IsDead => false;
 
         public DamageTeam Team => default;
+        public IElement Element => new NullElement();
 
         public event UnityAction<int, ISource> OnTakeDamage;
         public event UnityAction<int, ISource> OnHeal;

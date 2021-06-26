@@ -36,7 +36,7 @@ namespace Elysium.Combat
 
         private void Recover()
         {
-            Gain(recoveryAmount.Value, ResourceModifierSourceFactory.Unit(self, element));
+            Gain(recoveryAmount.Value, SourceFactory.Unit(self, element));
         }
     }
 
