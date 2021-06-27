@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,17 @@ namespace Elysium.Combat
 {
     public class GenericElement : IElement
     {
-        private Element name;
+        private string name;
         private Color color;
-        private Dictionary<Element, float> interactions;
-        public Element Name => name;
+        private Dictionary<string, float> interactions;
+        public string Name => name;
 
-        public GenericElement(Element _name, Color _color, Dictionary<Element, float> _interactions)
+        public GenericElement(string _name, Color _color, Dictionary<string, float> _interactions = null)
         {
             this.name = _name;
-            this.color = _color;            
+            this.color = _color;
+
+            _interactions = _interactions != null ? _interactions : new Dictionary<string, float>();
             this.interactions = validate(_interactions);
         }
 
@@ -48,15 +51,15 @@ namespace Elysium.Combat
             return style;
         }
 
-        private Dictionary<Element, float> validate(Dictionary<Element, float> _interactions)
+        private Dictionary<string, float> validate(Dictionary<string, float> _interactions)
         {
-            Element[] allElements = ElementFactory.AllElementKeys;
+            string[] allElements = Enum.GetValues(typeof(Element)).Cast<Element>().Select(x => x.ToString().ToLower()).ToArray();
             _interactions = addMissingKeys(allElements, _interactions);
             _interactions = removeExtraKeys(allElements, _interactions);
             return _interactions;
         }
 
-        private Dictionary<Element, float> addMissingKeys(Element[] _elements, Dictionary<Element, float> _interactions)
+        private Dictionary<string, float> addMissingKeys(string[] _elements, Dictionary<string, float> _interactions)
         {
             foreach (var e in _elements)
             {
@@ -69,14 +72,20 @@ namespace Elysium.Combat
             return _interactions;
         }
 
-        private Dictionary<Element, float> removeExtraKeys(Element[] _elements, Dictionary<Element, float> _interactions)
+        private Dictionary<string, float> removeExtraKeys(string[] _elements, Dictionary<string, float> _interactions)
         {
+            List<string> keysToRemove = new List<string>();
             foreach (var i in _interactions)
             {
                 if (!_elements.Contains(i.Key))
                 {
-                    _interactions.Remove(i.Key);
+                    keysToRemove.Add(i.Key);                    
                 }
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                _interactions.Remove(key);
             }
 
             return _interactions;

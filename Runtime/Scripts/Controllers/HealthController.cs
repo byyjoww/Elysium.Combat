@@ -7,8 +7,8 @@ namespace Elysium.Combat
 {
     public class HealthController : ResourceController, IDamageable
     {
-        [SerializeField] private DamageTeam team;
-        [SerializeField] private Element element;
+        [SerializeField, ConditionalField("manual")] private DamageTeam team = default;
+        [SerializeField, ConditionalField("manual")] private Element element = default;
         public DamageTeam Team => team;
         public IElement Element { get; private set; } = new NullElement();
         public MonoBehaviour Controller => this;
@@ -22,9 +22,13 @@ namespace Elysium.Combat
         protected override void Start()
         {
             base.Start();
-            if (ElementFactory.GetElementByKey(element, out IElement ielement))
+            if (manual)
             {
-                Element = ielement;
+                ElementFactory efactory = FindObjectOfType<ElementFactory>();
+                if (efactory != null)
+                {
+                    Element = efactory.GetElementByKeyOrDefault(element);
+                }                
             }
         }
 

@@ -17,7 +17,7 @@ namespace Elysium.Combat
         [SerializeField, ConditionalField("manual")] private int max = default;
 
         [Separator("Options", true)]
-        [SerializeField] private bool manual = false;        
+        [SerializeField] protected bool manual = false;        
         [SerializeField] protected bool fillOnStart = false;
         [SerializeField] private bool generatePopups = false;
         

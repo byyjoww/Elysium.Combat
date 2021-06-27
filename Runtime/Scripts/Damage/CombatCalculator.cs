@@ -14,7 +14,9 @@ namespace Elysium.Combat
             bool crit = IsCriticalHit(_applier, damage, out damage);
             ISource source = SourceFactory.Unit(_applier, _applierElement, crit);
             _receiver.TakeDamage(damage, source);
-            Debug.Log($"Dealt {damage} {_applierElement.Name} damage to {_receiver.Element.Name} opponent (Crit: {crit})");
+
+            string critMsg = crit ? "CRITICAL HIT! " : "";
+            Debug.Log($"{critMsg}Dealt {damage} {_applierElement.Name} damage to {_receiver.Element.Name} opponent");
         }
 
         public static bool IsCriticalHit(IDamageDealer _damageDealer, int _before, out int _after)
@@ -47,7 +49,7 @@ namespace Elysium.Combat
 
             // Debug.Log($"Additive Multipliers: {{ {string.Join(", ", _additiveMultipliers)} }}");
             // Debug.Log($"Multiplicative Multipliers: {{ {string.Join(", ", _multiplicativeMultipliers)} }}");
-            Debug.Log($"Calculated Damage Results = Add: {add} | Mult: {mult} | Final: {final} | Base: {damageDealer.Damage.Value} | Damage: {damage}");
+            // Debug.Log($"Calculated Damage Results = Add: {add} | Mult: {mult} | Final: {final} | Base: {damageDealer.Damage.Value} | Damage: {damage}");
             
             return damage;
         }

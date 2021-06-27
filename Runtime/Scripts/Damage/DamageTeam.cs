@@ -1,8 +1,9 @@
 ﻿namespace Elysium.Combat
 {
     public enum DamageTeam 
-    { 
-        PLAYER = 0, 
-        ENEMY = 1, 
+    {
+        UNKNOWN = 0,
+        PLAYER = 1, 
+        ENEMY = 2,
     }
 }

@@ -1,0 +1,30 @@
+---
+fire:
+  color: red
+  multipliers:
+    fire: 0.1
+    water: 0.5
+    earth: 2.0
+water:
+  color: blue
+  multipliers:
+    water: 0.1
+    wind: 0.5
+    fire: 2.0
+wind:
+  color: yellow
+  multipliers:
+    wind: 0.1
+    earth: 0.5
+    water: 2.0
+earth:
+  color: green
+  multipliers:
+    earth: 0.1
+    fire: 0.5
+    wind: 2.0
+poison:
+  color: '#FF00FF'
+  multipliers:
+    poison: 0.1
+    water: 2.0
