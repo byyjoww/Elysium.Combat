@@ -11,10 +11,12 @@ namespace Elysium.Combat
     {
         private DamagePopup damagePopup = default;
         private Transform transform = default;
+        private Vector3 offset = default;
 
-        public DamagePopupResource(IResource _resource, Transform _entity) : base(_resource)
+        public DamagePopupResource(IResource _resource, Transform _entity, Vector3 _offset) : base(_resource)
         {
             transform = _entity.transform;
+            offset = _offset;
             string path = "DamagePopup";
             damagePopup = Resources.Load<DamagePopup>(path);
             if (damagePopup == null) { throw new System.Exception($"No damage popup prefab found at path {path}"); }
@@ -34,15 +36,15 @@ namespace Elysium.Combat
 
         private void GeneratePopup(int _delta, ISource _source)
         {
-            damagePopup.Create(transform.position, _delta, _source.DamagePopupStyle);
+            damagePopup.Create(transform.position + offset, _delta, _source.DamagePopupStyle);
         }
     }
 
     public static class DamagePopupResourceExtension
     {
-        public static IResource WithDamagePopup(this IResource _resource, Transform _entity)
+        public static IResource WithDamagePopup(this IResource _resource, Transform _entity, Vector3 _offset)
         {
-            return new DamagePopupResource(_resource, _entity);
+            return new DamagePopupResource(_resource, _entity, _offset);
         }
     }
 }

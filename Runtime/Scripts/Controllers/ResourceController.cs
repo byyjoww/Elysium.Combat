@@ -20,7 +20,8 @@ namespace Elysium.Combat
         [SerializeField] protected bool manual = false;        
         [SerializeField] protected bool fillOnStart = false;
         [SerializeField] private bool generatePopups = false;
-        
+        [SerializeField, ConditionalField("generatePopups")] private Vector3 popupOffset = default;
+
         protected IResource resource = new NullResource();
 
         public float Current => resource.Current;
@@ -39,7 +40,7 @@ namespace Elysium.Combat
             if (manual && resource is NullResource)
             {
                 IResource res = new Resource(max, min);
-                if (generatePopups) { res = res.WithDamagePopup(transform); }
+                if (generatePopups) { res = res.WithDamagePopup(transform, popupOffset); }
                 Setup(res);
             }
         }
