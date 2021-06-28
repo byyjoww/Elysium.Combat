@@ -18,7 +18,7 @@ namespace Elysium.Combat
         POISON,
     }
 
-    public class ElementFactory : MonoBehaviour
+    public class ElementFactory : MonoBehaviour, IElementFactory
     {
         public bool Initialized { get; private set; } = false;
 

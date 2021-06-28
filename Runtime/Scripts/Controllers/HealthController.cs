@@ -2,6 +2,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Linq;
 
 namespace Elysium.Combat
 {
@@ -24,11 +25,11 @@ namespace Elysium.Combat
             base.Start();
             if (manual)
             {
-                ElementFactory efactory = FindObjectOfType<ElementFactory>();
+                IElementFactory efactory = FindObjectsOfType<MonoBehaviour>().OfType<IElementFactory>().FirstOrDefault();
                 if (efactory != null)
                 {
                     Element = efactory.GetElementByKeyOrDefault(element);
-                }                
+                }
             }
         }
 
