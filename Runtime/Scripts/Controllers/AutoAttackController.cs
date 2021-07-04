@@ -1,4 +1,5 @@
-﻿using Elysium.Utils;
+﻿using Elysium.Character;
+using Elysium.Utils;
 using Elysium.Utils.Attributes;
 using Elysium.Utils.Timers;
 using System;
@@ -37,7 +38,7 @@ namespace Elysium.Combat
         }
 
         private TimerInstance attackTimer;
-        private IModelController modelController;        
+        private IModelController modelController;
 
         // ASPD Calculation
         public float AttackSpeed => BaseAttackSpeed.Value * BonusAttackSpeed.Value;
@@ -63,7 +64,7 @@ namespace Elysium.Combat
 
             CachedTarget = Target;
             OnAttackStart?.Invoke();
-            modelController.SetAttackSpeed(AttackSpeed);
+            modelController.Animator.SetFloat("aspd", AttackSpeed);
             modelController.PlayAnimation(attackStateName);
             IsAttacking = true;
             modelController.OnAnimationHit += CheckForHit;

@@ -69,8 +69,8 @@ namespace Elysium.Combat
 
         private bool GetElementByKey(string _key, out IElement _element)
         {
-            _key = _key.ToLower();
             if (!Initialized) { Initialize(); }
+            _key = _key.ToLower();
             bool dictionaryContainsKey = ElementDictionary.ContainsKey(_key);
             _element = dictionaryContainsKey ? ElementDictionary[_key] : new NullElement();
             return dictionaryContainsKey;

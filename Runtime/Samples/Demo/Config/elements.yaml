@@ -27,4 +27,3 @@ poison:
   color: '#FF00FF'
   multipliers:
     poison: 0.1
-    water: 2.0
