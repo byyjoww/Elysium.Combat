@@ -2,7 +2,10 @@
   "author": "Elysium Entertainment",
   "displayName": "Elysium.Combat",
   "dependencies": {
-    "com.elysium.core": "1.0.0"
+    "com.elysium.core": "1.0.0",
+	"com.elysium.ui.progressbar": "1.0.0",
+	"com.elysium.character": "1.0.0",
+	"com.unity.textmeshpro": "3.0.6"
   },
   "hideInEditor": false,
   "name": "com.elysium.combat",
@@ -10,9 +13,14 @@
   "version": "1.0.0",
   "samples": [
     {
-      "displayName": "Demo",
-      "description": "Small demo scripts showing how to use the package.",
-      "path": "Samples/Demo"
+      "displayName": "Scripts",
+      "description": "Package scripts.",
+      "path": "Samples/Scripts"
+    },
+	{
+      "displayName": "Resource",
+      "description": "Package resources.",
+      "path": "Samples/Resource"
     }
   ]
 }
