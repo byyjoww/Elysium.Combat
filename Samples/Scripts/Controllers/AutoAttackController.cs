@@ -1,5 +1,4 @@
-﻿using Elysium.Character;
-using Elysium.Utils;
+﻿using Elysium.Utils;
 using Elysium.Utils.Attributes;
 using Elysium.Utils.Timers;
 using System;
@@ -38,7 +37,7 @@ namespace Elysium.Combat
         }
 
         private TimerInstance attackTimer;
-        private IModelController modelController;
+        // private IModelController modelController;
 
         // ASPD Calculation
         public float AttackSpeed => BaseAttackSpeed.Value * BonusAttackSpeed.Value;
@@ -64,11 +63,11 @@ namespace Elysium.Combat
 
             CachedTarget = Target;
             OnAttackStart?.Invoke();
-            modelController.Animator.SetFloat("aspd", AttackSpeed);
-            modelController.PlayAnimation(attackStateName);
+            // modelController.Animator.SetFloat("aspd", AttackSpeed);
+            // modelController.PlayAnimation(attackStateName);
             IsAttacking = true;
-            modelController.OnAnimationHit += CheckForHit;
-            modelController.OnAnimationEnd += CheckForEnd;
+            // modelController.OnAnimationHit += CheckForHit;
+            // modelController.OnAnimationEnd += CheckForEnd;
             transform.LookAt(CachedTarget.Item1);
             return true;
         }
@@ -82,19 +81,19 @@ namespace Elysium.Combat
 
             if (CachedTarget != null)
             {
-                CombatCalculator.DealDamage(this, new NullElement(), CachedTarget.Item2, null, null);
+                CombatCalculator.DealDamage(this, new NullElement(), CachedTarget.Item2, Damage.Value, null, null);
             }
 
             OnAttack?.Invoke(CachedTarget.Item2);
             CachedTarget = null;
-            modelController.OnAnimationHit -= CheckForHit;
+            // modelController.OnAnimationHit -= CheckForHit;
         }
 
         public void EndAttack()
         {
             OnAttackEnd?.Invoke();
             IsAttacking = false;
-            modelController.OnAnimationEnd -= CheckForEnd;
+            // modelController.OnAnimationEnd -= CheckForEnd;
         }
 
         public void OnCriticalHitCallback()

@@ -3,9 +3,8 @@
   "displayName": "Elysium.Combat",
   "dependencies": {
     "com.elysium.core": "1.0.0",
-	"com.elysium.ui.progressbar": "1.0.0",
-	"com.elysium.character": "1.0.0",
-	"com.unity.textmeshpro": "3.0.6"
+    "com.elysium.ui.progressbar": "1.0.0",
+    "com.unity.textmeshpro": "3.0.6"
   },
   "hideInEditor": false,
   "name": "com.elysium.combat",
@@ -17,7 +16,7 @@
       "description": "Package scripts.",
       "path": "Samples/Scripts"
     },
-	{
+    {
       "displayName": "Resource",
       "description": "Package resources.",
       "path": "Samples/Resource"
